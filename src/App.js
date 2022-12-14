@@ -1,6 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Form from './components/Form'
 import Todo from './components/Todo'
+import { db } from './firebase'
+import {
+  query,
+  collection,
+  onSnapshot,
+  updateDoc,
+  doc,
+} from 'firebase/firestore'
 
 //tailwind styling
 const style = {
@@ -11,7 +19,29 @@ const style = {
 }
 
 function App() {
-  const [todos, setTodos] = useState(['Learn React', 'Grind Leetcode'])
+  const [todos, setTodos] = useState([])
+
+  //read todo from firebase backend
+  useEffect(() => {
+    const q = query(collection(db, 'todos'))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let todosArr = []
+      querySnapshot.forEach((doc) => {
+        todosArr.push({ ...doc.data(), id: doc.id })
+      })
+      setTodos(todosArr)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  //update todo
+  const toggleComplete = async (todo) => {
+    await updateDoc(doc(db, 'todos', todo.id), {
+      completed: !todo.completed,
+    })
+  }
+  //delete
+
   return (
     <div className={style.bg}>
       <div className={style.container}>
@@ -20,11 +50,12 @@ function App() {
 
         <ul>
           {todos.map((todo, index) => (
-            <Todo key={index} todo={todo} />
+            <Todo key={index} todo={todo} toggleComplete={toggleComplete} />
           ))}
         </ul>
-
-        <p className={style.count}>You have 2 tasks to complete</p>
+        {todos.length < 1 ? null : (
+          <p className={style.count}>{`You have ${todos.length} todos`}</p>
+        )}
       </div>
     </div>
   )
