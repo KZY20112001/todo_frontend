@@ -8,6 +8,7 @@ import {
   onSnapshot,
   updateDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore'
 
 //tailwind styling
@@ -40,8 +41,11 @@ function App() {
       completed: !todo.completed,
     })
   }
-  //delete
 
+  //delete
+  const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, 'todos', id))
+  }
   return (
     <div className={style.bg}>
       <div className={style.container}>
@@ -50,7 +54,12 @@ function App() {
 
         <ul>
           {todos.map((todo, index) => (
-            <Todo key={index} todo={todo} toggleComplete={toggleComplete} />
+            <Todo
+              key={index}
+              todo={todo}
+              toggleComplete={toggleComplete}
+              deleteTodo={deleteTodo}
+            />
           ))}
         </ul>
         {todos.length < 1 ? null : (
