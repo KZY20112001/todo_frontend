@@ -46,6 +46,7 @@ function App() {
   const deleteTodo = async (id) => {
     await deleteDoc(doc(db, 'todos', id))
   }
+
   return (
     <div className={style.bg}>
       <div className={style.container}>
