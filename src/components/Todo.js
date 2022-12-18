@@ -7,7 +7,7 @@ const style = {
   li_complete: `flex justify-between bg-slate-400 p-3 my-2`,
   row: `flex justify-center`,
   text: `ml-2 cursor-pointer capitalize`,
-  text_complete: `ml-2 curson-pointer line-through capitalize`,
+  text_complete: `ml-2 cursor-pointer line-through capitalize`,
   button: `cursor-pointer flex items-center`,
 }
 
